@@ -5,6 +5,7 @@ import DebugPanel from "@/components/DebugPanel";
 import GameHeader from "@/components/GameHeader";
 import Grid from "@/components/Grid";
 import PlayerSearch from "@/components/PlayerSearch";
+import SummaryOverlay from "@/components/SummaryOverlay";
 import { buildCategories } from "@/lib/categories";
 import { checkAnswer } from "@/lib/checkAnswer";
 import {
@@ -141,6 +142,7 @@ export default function GameClient({
   const [game, setGame] = useState<GameState | null>(setup.initialGame);
   const [activeCellId, setActiveCellId] = useState<string | null>(null);
   const [message, setMessage] = useState<FlashMessage | null>(null);
+  const [summaryOpen, setSummaryOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const categoriesById = setup.categories.reduce<Record<string, Category>>((accumulator, category) => {
@@ -178,6 +180,12 @@ export default function GameClient({
     currentColumnLabels,
   ]);
 
+  useEffect(() => {
+    if (game?.isOver) {
+      setSummaryOpen(true);
+    }
+  }, [game?.isOver]);
+
   if (setup.error || !game) {
     return (
       <section className="app-shell error-state">
@@ -201,6 +209,7 @@ export default function GameClient({
       try {
         setGame(buildFreshGame(setup.categories, setup.players.length));
         setActiveCellId(null);
+        setSummaryOpen(false);
         setMessage({
           tone: "info",
           text: "New grid generated.",
@@ -394,6 +403,18 @@ export default function GameClient({
         usedPlayerIds={usedPlayerIds}
         onClose={() => setActiveCellId(null)}
         onSubmit={handleSubmit}
+      />
+
+      <SummaryOverlay
+        answers={game.answers}
+        answersShown={game.answersShown}
+        cells={game.grid.cells}
+        correctCount={correctCount}
+        guessesRemaining={game.guessesRemaining}
+        isOpen={summaryOpen}
+        score={score}
+        onClose={() => setSummaryOpen(false)}
+        onNewGrid={resetGrid}
       />
     </section>
   );
