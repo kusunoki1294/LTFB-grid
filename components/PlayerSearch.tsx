@@ -58,7 +58,7 @@ export default function PlayerSearch({
         : player.name.toLowerCase().includes(normalizedQuery) ||
           player.aliases.some((alias) => alias.toLowerCase().includes(normalizedQuery)),
     )
-    .slice(0, 10);
+    .slice(0, 5);
 
   return (
     <div className="search-backdrop" role="presentation" onClick={onClose}>
@@ -84,6 +84,7 @@ export default function PlayerSearch({
             event.preventDefault();
             if (query.trim()) {
               onSubmit(query.trim());
+              onClose();
             }
           }}
         >
@@ -94,12 +95,14 @@ export default function PlayerSearch({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          <button className="button" type="submit">
+          <button className="button" type="submit" disabled={!query.trim()}>
             Check
           </button>
         </form>
 
-        <p className="helper-text">Unused players matching your search:</p>
+        <p className="helper-text">
+          Unused players matching your search. Click one to fill the input, then press Check.
+        </p>
 
         <div className="search-list">
           {filteredPlayers.length > 0 ? (
@@ -108,10 +111,10 @@ export default function PlayerSearch({
                 key={player.id}
                 className="search-option"
                 type="button"
-                onClick={() => onSubmit(player.name)}
+                onClick={() => setQuery(player.name)}
               >
                 <span className="search-option-name">{player.name}</span>
-                <span className="search-option-meta">Choose this player</span>
+                <span className="search-option-meta">Fill this player into the search box</span>
               </button>
             ))
           ) : (

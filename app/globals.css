@@ -249,6 +249,30 @@ input {
   background: linear-gradient(180deg, rgba(255, 250, 243, 0.9), rgba(248, 239, 226, 0.8));
 }
 
+.corner-card {
+  background:
+    linear-gradient(180deg, rgba(220, 230, 241, 0.98), rgba(198, 211, 227, 0.9));
+  border-color: rgba(84, 104, 129, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.category-card {
+  border-width: 1.5px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.category-card.column {
+  background:
+    linear-gradient(180deg, rgba(229, 237, 246, 0.98), rgba(209, 220, 234, 0.92));
+  border-color: rgba(84, 104, 129, 0.24);
+}
+
+.category-card.row {
+  background:
+    linear-gradient(180deg, rgba(229, 237, 246, 0.98), rgba(209, 220, 234, 0.92));
+  border-color: rgba(84, 104, 129, 0.24);
+}
+
 .board-label {
   color: var(--muted);
   font-size: 0.8rem;
