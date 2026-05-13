@@ -1,5 +1,5 @@
-import GameClient from "@/components/GameClient";
 import { buildCategories } from "@/lib/categories";
+import GameClient from "@/components/GameClient";
 import { GOOGLE_SHEET_ERROR_MESSAGE, loadGameData } from "@/lib/googleSheets";
 import { generateGrid } from "@/lib/gridGenerator";
 

@@ -28,6 +28,30 @@ npm run dev
 
 3. Open `http://localhost:3000`
 
+## Deploy on Vercel
+
+The project is already configured for a standard Vercel deploy.
+
+Use these settings:
+
+- Framework Preset: `Next.js`
+- Root Directory: `./`
+- Build Command: leave default
+- Output Directory: leave default
+- Install Command: leave default
+- Environment Variables: none required for the current sheet
+
+Optional environment variable:
+
+- `GOOGLE_SHEET_ID`
+  Use this only if you want to point the app at a different Google Sheet.
+
+Notes:
+
+- The app now pins its package versions and declares `Node >=20.9.0`, which matches Next.js 16 requirements.
+- Google Sheet data is cached for 5 minutes on the server to make Vercel runtime requests more stable without making the build depend on Google Sheets availability.
+- The sheet must still be publicly accessible from Vercel, not just from your local browser.
+
 ## Optional environment variable
 
 The app defaults to the provided spreadsheet ID, but you can override it:

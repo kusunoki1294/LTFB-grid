@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { normalizeSheetData } from "@/lib/normalizeData";
 import type { NormalizedGameData } from "@/lib/types";
 
@@ -14,9 +15,7 @@ function buildCsvUrl(spreadsheetId: string, sheetName: string): string {
 }
 
 async function fetchSheetCsv(spreadsheetId: string, sheetName: string): Promise<string> {
-  const response = await fetch(buildCsvUrl(spreadsheetId, sheetName), {
-    cache: "no-store",
-  });
+  const response = await fetch(buildCsvUrl(spreadsheetId, sheetName));
 
   if (!response.ok) {
     throw new Error(`Failed to fetch ${sheetName}: ${response.status}`);
@@ -25,9 +24,7 @@ async function fetchSheetCsv(spreadsheetId: string, sheetName: string): Promise<
   return response.text();
 }
 
-export async function loadGameData(
-  spreadsheetId = process.env.GOOGLE_SHEET_ID?.trim() || DEFAULT_SPREADSHEET_ID,
-): Promise<NormalizedGameData> {
+async function loadGameDataUncached(spreadsheetId: string): Promise<NormalizedGameData> {
   try {
     const [externalCsv, statsCsv, advancedStatsCsv] = await Promise.all(
       sheetNames.map((sheetName) => fetchSheetCsv(spreadsheetId, sheetName)),
@@ -43,4 +40,14 @@ export async function loadGameData(
     console.error("Failed to load Google Sheet data", error);
     throw new Error(GOOGLE_SHEET_ERROR_MESSAGE);
   }
+}
+
+const loadCachedGameData = unstable_cache(loadGameDataUncached, ["ltfb-grid-sheet-data"], {
+  revalidate: 300,
+});
+
+export async function loadGameData(
+  spreadsheetId = process.env.GOOGLE_SHEET_ID?.trim() || DEFAULT_SPREADSHEET_ID,
+): Promise<NormalizedGameData> {
+  return loadCachedGameData(spreadsheetId);
 }
